@@ -48,8 +48,9 @@ func (p *NoCORSReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request
 		p.ReverseProxy.ServeHTTP(rw, req)
 		return
 	}
-	// The request is for an OPTIONS method if it doesn't have the header: Access-Control-Request-Method,
-	// it is not a preflight request, otherwise it is: https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request.
+	// The request is for an OPTIONS method, if it doesn't have the header:
+	// Access-Control-Request-Method it is not a preflight request, otherwise
+	// it is.
 	if _, ok := req.Header["Access-Control-Request-Method"]; !ok {
 		p.ReverseProxy.ServeHTTP(rw, req)
 		return
