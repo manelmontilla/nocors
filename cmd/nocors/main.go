@@ -1,5 +1,5 @@
 // nocors is a reverse proxy that intercepts all the [preflight] requests
-// it receives and generates a response that always allows the operation.
+// it receives, and generates a response that always allows the operation.
 // [preflight]:https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request
 package main
 
@@ -13,7 +13,6 @@ import (
 
 func main() {
 	flag.Usage = usage
-	flag.Parse()
 	if flag.NArg() != 2 {
 		usage()
 		os.Exit(1)
@@ -43,19 +42,19 @@ func (p *NoCORSReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request
 	for _, o := range allowOrigin {
 		rw.Header().Add("Access-Control-Allow-Origin", o)
 	}
-	// check if the request is not a preflight.
+	// If the request is not a preflight we forward it upstream.
 	if req.Method != http.MethodOptions {
 		p.ReverseProxy.ServeHTTP(rw, req)
 		return
 	}
 	// The request is for an OPTIONS method, if it doesn't have the header:
-	// Access-Control-Request-Method it is not a preflight request, otherwise
+	// "Access-Control-Request-Method" it is not a preflight request, otherwise
 	// it is.
 	if _, ok := req.Header["Access-Control-Request-Method"]; !ok {
 		p.ReverseProxy.ServeHTTP(rw, req)
 		return
 	}
-	// It's a preflight request generate an "allow" response.
+	// It's a preflight request, generate an "allow" response.
 	allowMethods := req.Header["Access-Control-Request-Method"]
 	allowHeaders := req.Header["Access-Control-Request-Headers"]
 
