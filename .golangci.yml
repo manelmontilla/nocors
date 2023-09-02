@@ -1,0 +1,10 @@
+linters:
+  enable:
+    - gci
+    - godot
+    - gofmt
+    - misspell
+    - revive
+    - whitespace
+issues:
+  exclude-use-default: false
