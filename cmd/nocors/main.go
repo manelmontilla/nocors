@@ -32,11 +32,11 @@ func usage() {
 	fmt.Fprint(os.Stderr, "usage: nocors <listen_address> <dest_host>\nexample: nocors localhost:8080 localhost:9090")
 }
 
-type NoCORSReverseProxy struct {
+type noCORSReverseProxy struct {
 	*httputil.ReverseProxy
 }
 
-func (p *NoCORSReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+func (p *noCORSReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// We always need to add the "Access-Control-Allow-Origin" header.
 	allowOrigin := req.Header["Origin"]
 	for _, o := range allowOrigin {
@@ -68,7 +68,7 @@ func (p *NoCORSReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request
 	rw.WriteHeader(http.StatusNoContent)
 }
 
-func newNoCorsReverseProxy(host string) *NoCORSReverseProxy {
+func newNoCorsReverseProxy(host string) *noCORSReverseProxy {
 	director := func(req *http.Request) {
 		req.URL.Host = host
 		req.URL.Scheme = "http"
@@ -78,5 +78,5 @@ func newNoCorsReverseProxy(host string) *NoCORSReverseProxy {
 		}
 	}
 	rp := &httputil.ReverseProxy{Director: director}
-	return &NoCORSReverseProxy{rp}
+	return &noCORSReverseProxy{rp}
 }
