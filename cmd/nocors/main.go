@@ -13,6 +13,7 @@ import (
 
 func main() {
 	flag.Usage = usage
+	flag.Parse()
 	if flag.NArg() != 2 {
 		usage()
 		os.Exit(1)
